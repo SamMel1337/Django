@@ -1,4 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from .models import Product
+
+def product_detail(request):
+    products = Product.objects.all()
+    return render(request, 'catalog/product_detail.html', {'products': products})
 
 # Create your views here.
 def example_view(request):
@@ -9,6 +14,5 @@ def example(request):
 
 def example1(request):
     return render(request,"catalog/home.html")
-
 
 

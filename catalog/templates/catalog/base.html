@@ -1,10 +1,28 @@
+
 <!DOCTYPE html>
-<html lang="en">
+{% load static %}
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>{% block title %}Магазин{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
+    {% include 'catalog/menu.html' %}
 
+    <header>
+        <h1>Магазин товаров</h1>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Мой магазин</p>
+    </footer>
+    {% for product in products %}
+    <a href="{% url 'catalog:product_detail' product.pk %}">{{ product.name }}</a>
+    {% endfor %}
 </body>
 </html>
