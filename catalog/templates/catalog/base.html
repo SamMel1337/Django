@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 {% load static %}
 <html lang="ru">
@@ -15,14 +14,14 @@
     </header>
 
     <main>
-        {% block content %}{% endblock %}
+        {% block content %}
+            {% block product_list %}
+            {% endblock %}
+        {% endblock %}
     </main>
 
     <footer>
         <p>&copy; 2024 Мой магазин</p>
     </footer>
-    {% for product in products %}
-    <a href="{% url 'catalog:product_detail' product.pk %}">{{ product.name }}</a>
-    {% endfor %}
 </body>
 </html>
