@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }} - Подробности{% endblock %}
+
+{% block content %}
+<ul>
+    <li>{{ product.name }} - {{ product.price }} руб.</li>
+    <li>{{ product.description }}</li>
+    <li><img src="{{ product.image.url }}" alt="{{ product.name }}"></li>
+    <li><a href="{% url 'catalog:home' %}">Назад к списку товаров</a></li>
+</ul>
+{% endblock %}

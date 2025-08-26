@@ -5,6 +5,11 @@ def product_list(request):
     products = Product.objects.all()
     return render(request, 'catalog/product_list.html', {'products': products})
 
+
+def product_detail(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    return render(request, "catalog/product_detail.html", {"product": product})
+
 # Create your views here.
 def example_view(request):
     return render(request,"catalog/base.html")

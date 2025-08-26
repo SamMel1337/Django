@@ -1,15 +1,14 @@
-{% extends 'base.html' %}
+{{% extends 'catalog/base.html' %}
 
 {% block title %}Список товаров{% endblock %}
 
 {% block content %}
-    {% block product_list %}
-        <ul>
-            {% for product in products %}
-                <li>{{ product.name }} - {{ product.price }} руб.</li>
-            {% empty %}
-                <li>Товары не найдены.</li>
-            {% endfor %}
-        </ul>
-    {% endblock %}
+<ul>
+    {% for product in products %}
+    <li>{{ product.name }} - {{ product.price }} руб.</li>
+    <li><a href="{% url 'catalog:product_detail' product.pk %}">Подробнее</a></li>
+    {% empty %}
+    <li>Товары не найдены.</li>
+    {% endfor %}
+</ul>
 {% endblock %}
