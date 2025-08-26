@@ -1,23 +1,27 @@
-from django.shortcuts import render, get_object_or_404
-from .models import Product
-
-def product_list(request):
-    products = Product.objects.all()
-    return render(request, 'catalog/product_list.html', {'products': products})
+from django.views.generic import ListView, DetailView, TemplateView
+from catalog.models import Product
 
 
-def product_detail(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    return render(request, "catalog/product_detail.html", {"product": product})
+# Перевод списка товаров
+class ProductListView(ListView):
+    model = Product
+    template_name = 'catalog/product_list.html'
+    context_object_name = 'products'
 
-# Create your views here.
-def example_view(request):
-    return render(request,"catalog/base.html")
+# Детальный просмотр товара
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'catalog/product_detail.html'
+    context_object_name = 'product'
 
-def example(request):
-    return render(request,"catalog/contacts.html")
+# Страница base
+class BaseView(TemplateView):
+    template_name = 'catalog/base.html'
 
-def example1(request):
-    return render(request,"catalog/home.html")
+# Страница контактов
+class ContactsView(TemplateView):
+    template_name = 'catalog/contacts.html'
 
-
+# Главная страница (home)
+class HomeView(TemplateView):
+    template_name = 'catalog/home.html'
