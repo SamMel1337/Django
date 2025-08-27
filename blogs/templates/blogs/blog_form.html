@@ -1,0 +1,25 @@
+{% extends 'blogs/base.html' %}
+
+
+{% block title %}Редактировать "{{ post.title }}"{% endblock %}
+
+{% block content %}
+<h1>Редактировать "{{ post.title }}"</h1>
+
+<form method="post">
+  {% csrf_token %}
+  <label>Заголовок:</label><br />
+  <input type="text" name="title" value="{{ post.title }}" required /><br />
+
+  <label>Контент:</label><br />
+  <textarea name="content" rows="10" cols="50" required>{{ post.content }}</textarea><br />
+
+  <label>Опубликовать:</label>
+  <input type="checkbox" name="published" {% if post.published %}checked{% endif %} /><br />
+
+  <button type="submit">Обновить</button>
+</form>
+
+<a href="{{ post.get_absolute_url }}">Отмена</a> |
+<a href="{% url 'blogs:blog_list' %}">К списку статей</a>
+{% endblock %}

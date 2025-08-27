@@ -1,0 +1,18 @@
+{% extends 'blogs/base.html' %}
+
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<h1>{{ post.title }}</h1>
+<p>{{ post.content }}</p>
+<p>Просмотры: {{ post.views_count }}</p>
+
+<a href="{% url 'blogs:blog_form' post.pk %}">Редактировать</a> |
+<form action="{% url 'blogs:blog_confirm_delete' post.pk %}" method="post" style="display:inline;">
+  {% csrf_token %}
+  <button type="submit">Удалить</button>
+</form>
+
+<a href="{% url 'blogs:blog_list' %}">Назад к списку</a>
+{% endblock %}
