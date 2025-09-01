@@ -1,5 +1,7 @@
-from django.views.generic import ListView, DetailView, TemplateView
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView
 from catalog.models import Product
+from .forms import ProductForm
 
 
 # Перевод списка товаров
@@ -25,3 +27,19 @@ class ContactsView(TemplateView):
 # Главная страница (home)
 class HomeView(TemplateView):
     template_name = 'catalog/home.html'
+
+
+class ProductCreateView(CreateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'product_form.html'
+    success_url = reverse_lazy('product_list')  # или другой URL, куда перенаправлять после создания
+
+
+class ProductUpdateView(UpdateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'product_form.html'
+
+    def get_success_url(self):
+        return reverse_lazy('product_detail', kwargs={'pk': self.object.pk})
