@@ -1,4 +1,6 @@
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView
 from catalog.models import Product
 from .forms import ProductForm
@@ -21,9 +23,17 @@ class BaseView(TemplateView):
     template_name = 'catalog/base.html'
 
 # Страница контактов
-class ContactsView(TemplateView):
-    template_name = 'catalog/contacts.html'
 
+class ContactsView(View):
+    def get(self, request):
+        return render(request, 'catalog/contacts.html')
+
+    def post(self, request):
+        name = request.POST.get('name')
+        phone = request.POST.get('phone')
+        message = request.POST.get('message')
+        # Обработка данных
+        return redirect('/contacts/')
 # Главная страница (home)
 class HomeView(TemplateView):
     template_name = 'catalog/home.html'
@@ -42,4 +52,4 @@ class ProductUpdateView(UpdateView):
     template_name = 'product_form.html'
 
     def get_success_url(self):
-        return reverse_lazy('product_detail', kwargs={'pk': self.object.pk})
+        return self.object.get_absolute_url()
