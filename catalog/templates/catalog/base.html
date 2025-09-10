@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Магазин{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/css/bootstrap.css' %}">
 </head>
 <body>
     {% include 'catalog/menu.html' %}
@@ -26,5 +26,6 @@
     <footer>
         <p>&copy; 2024 Мой магазин</p>
     </footer>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
 </body>
 </html>
