@@ -2,30 +2,67 @@
 {% load static %}
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>{% block title %}Магазин{% endblock %}</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/css/bootstrap.css' %}">
+    <style>
+        /* Стили для карточек */
+        .product-card {
+            margin-bottom: 20px;
+        }
+        .product-image {
+            height: 200px; /* фиксированная высота изображений */
+            object-fit: cover; /* аккуратная обрезка изображений */
+        }
+        /* Отступы и стили для текста */
+        .card-title {
+            font-weight: bold;
+        }
+        /* Удаление маркеров у списков, если есть */
+        ul {
+            padding-left: 0;
+            list-style: none;
+        }
+    </style>
 </head>
 <body>
     {% include 'catalog/menu.html' %}
     {% block form_block %}
     {% endblock %}
 
-
-    <header>
+    <header class="text-center my-4">
         <h1>Магазин товаров</h1>
     </header>
 
-    <main>
+    <main class="container">
         {% block content %}
             {% block product_list %}
+            <!-- Карточки товаров -->
+            <div class="row">
+                {% for product in products %}
+                <div class="col-md-4 product-card">
+                    <div class="card h-100 shadow-sm">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top product-image" alt="{{ product.name }}" />
+                        {% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">{{ product.description|truncatechars:100 }}</p>
+                            <p class="card-text"><strong>Цена:</strong> {{ product.price }} ₽</p>
+                            <a href="#" class="btn btn-primary mt-auto">Купить</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
             {% endblock %}
         {% endblock %}
     </main>
 
-    <footer>
+    <footer class="text-center py-4 bg-light">
         <p>&copy; 2024 Мой магазин</p>
     </footer>
+
     <script src="{% static 'js/bootstrap.js' %}"></script>
 </body>
 </html>
