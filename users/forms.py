@@ -1,30 +1,16 @@
-# users/forms.py
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm
-from .models import CustomUser
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from .models import User
 
-class UserRegistrationForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
-    password_confirm = forms.CharField(label='Подтверждение пароля', widget=forms.PasswordInput)
+class UserRegisterForm(UserCreationForm):
+    email = forms.EmailField()
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
 
     class Meta:
-        model = CustomUser
-        fields = ['email', 'username', 'password', 'password_confirm']
-
-    def clean(self):
-        cleaned_data = super().clean()
-        password = cleaned_data.get("password")
-        password_confirm = cleaned_data.get("password_confirm")
-        if password and password_confirm and password != password_confirm:
-            self.add_error('password_confirm', "Пароли не совпадают")
-        return cleaned_data
-
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        user.set_password(self.cleaned_data['password'])
-        if commit:
-            user.save()
-        return user
+        model = User
+        fields = ['email', 'password1', 'password2']
 
 class UserLoginForm(AuthenticationForm):
-    username = forms.EmailField(label='Электронная почта')
+    username = forms.EmailField(label='Email')
+    password = forms.CharField(widget=forms.PasswordInput)

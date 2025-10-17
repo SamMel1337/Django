@@ -1,38 +1,45 @@
-# users/views.py
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate, logout
+# Create your views here.
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseForbidden
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import login, logout
+from django.contrib import messages
 from django.core.mail import send_mail
-from .forms import UserRegistrationForm, UserLoginForm
+from django.conf import settings
+from .forms import UserRegisterForm, UserLoginForm
+
+
 
 def register(request):
     if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
+        form = UserRegisterForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
+
             # Отправка приветственного письма
             send_mail(
                 'Добро пожаловать!',
-                'Спасибо за регистрацию на сайте!',
-                'noreply@yourdomain.com',
+                'Спасибо за регистрацию в нашем магазине.',
+                settings.DEFAULT_FROM_EMAIL,
                 [user.email],
-                fail_silently=True,
+                fail_silently=False,
             )
+
+            messages.success(request, 'Вы успешно зарегистрированы!')
             login(request, user)
-            return redirect('home')  # или другая страница
+            return redirect('catalog:product_list')
     else:
-        form = UserRegistrationForm()
+        form = UserRegisterForm()
     return render(request, 'users/register.html', {'form': form})
 
+
 def user_login(request):
-    from django.contrib.auth.views import LoginView
-    # Можно сделать через встроенный LoginView, передав форму
-    # Или свой, как ниже:
     if request.method == 'POST':
-        form = UserLoginForm(request, data=request.POST)
+        form = UserLoginForm(data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('home')
+            return redirect('catalog:product_list')
     else:
         form = UserLoginForm()
     return render(request, 'users/login.html', {'form': form})
@@ -40,4 +47,4 @@ def user_login(request):
 
 def user_logout(request):
     logout(request)
-    return redirect('login')  # название вашего URL для входа
+    return redirect('catalog:product_list')
