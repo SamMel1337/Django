@@ -193,3 +193,5 @@ class ProductDeleteAPIView(LoginRequiredMixin, View):
                 'error': str(e),
                 'can_delete': False
             }, status=403)
+
+
