@@ -1,0 +1,23 @@
+{% extends 'blogs/base.html' %}
+
+{% block title %}Создать статью{% endblock %}
+
+{% block content %}
+<h1>Создать новую статью</h1>
+
+<form method="post">
+  {% csrf_token %}
+  <label>Заголовок:</label><br />
+  <input type="text" name="title" required /><br />
+
+  <label>Контент:</label><br />
+  <textarea name="content" rows="10" cols="50" required></textarea><br />
+
+  <label>Опубликовать:</label>
+  <input type="checkbox" name="published" /><br />
+
+  <button type="submit">Сохранить</button>
+</form>
+
+<a href="{% url 'blogs:blog_list' %}">Назад к списку</a>
+{% endblock %}

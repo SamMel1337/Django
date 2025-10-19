@@ -1,0 +1,44 @@
+{% extends "catalog/base.html" %}
+{% load static %}
+{% block content %}
+<div class="page-wrapper">
+    <!-- Шапка (черная) -->
+
+    <!-- Основной контейнер -->
+    <div class="main-container">
+        <!-- Боковая панель (слева) -->
+
+        <!-- Основное содержимое -->
+        <main class="main-content">
+            <h1 class="page-title">Каталог товаров</h1>
+
+            <div class="products-grid">
+                {% for product in products %}
+                <div class="product-card">
+<!--                    <a href="{% url 'catalog:product_detail' product.id %}">-->
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                        {% else %}
+                            <img src="/static/images/default-product.png" alt="No image available" class="product-image">
+                        {% endif %}
+                        <h3>{{ product.name }}</h3>
+                        <div class="price">{{ product.price }}$</div>
+                        <p>{{ product.description|truncatechars:100 }}</p>
+                        {% if product.is_new %}
+                            <span class="new-badge">Новинка!</span>
+                        {% endif %}
+                      <a href="{% url 'catalog:product_detail' product.id %}">Подробнее
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}
+
+
+
+{% block extra_js %}
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

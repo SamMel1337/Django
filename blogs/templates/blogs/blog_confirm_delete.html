@@ -1,0 +1,15 @@
+{% extends 'blogs/base.html' %}
+
+{% block title %}Удаление "{{ post.title }}"{% endblock %}
+
+{% block content %}
+<h1>Удалить статью "{{ post.title }}"?</h1>
+
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">Да, удалить</button>
+  <a href="{{ post.get_absolute_url }}">Отмена</a>
+</form>
+
+<a href="{% url 'blogs:blog_list' %}">К списку статей</a>
+{% endblock %}

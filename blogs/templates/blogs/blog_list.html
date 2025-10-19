@@ -1,0 +1,14 @@
+{% extends 'blogs/base.html' %}
+
+{% block title %}Список статей{% endblock %}
+
+{% block content %}
+<h1>Опубликованные статьи</h1>
+<ul>
+{% for post in posts %}
+<li><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></li>
+{% empty %}
+<li>Нет опубликованных статей.</li>
+{% endfor %}
+</ul>
+{% endblock %}

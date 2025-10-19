@@ -1,0 +1,103 @@
+{% extends "catalog/base.html" %}
+{% load static%}
+
+{% block title %}Список продуктов{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item active" aria-current="page">Продукты</li>
+{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Список продуктов</h1>
+        {% if perms.Product.can_review_categoru and perms.Product.can_recommend_categoru or user == Product.owner %}
+        <a href="{% url 'catalog:product_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>Добавить продукт
+        </a>
+        {% endif %}
+    </div>
+
+    {% if products %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for product in products %}
+        <div class="col">
+            <div class="card h-100 product-card">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" class="card-img-top product-image" alt="{{ product.name }}">
+                {% else %}
+                <div class="no-image-placeholder">
+                    <i class="bi bi-image text-muted"></i>
+                </div>
+                {% endif %}
+
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text text-muted mb-2">{{ product.description|truncatechars:60 }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="h5 text-primary mb-0">{{ product.price}} ₽</span>
+                        <span class="text-muted small">{{ product.created_at|date:"d.m.Y" }}</span>
+                    </div>
+                </div>
+
+                <div class="card-footer bg-transparent">
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye"></i> Просмотр
+                        </a>
+                        <div class="btn-group">
+                            <a href="{% url 'catalog:product_update' product.pk %}" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <i class="bi bi-box-seam display-4 text-muted mb-3"></i>
+            <h4 class="text-muted">Продукты не найдены</h4>
+            <p class="text-muted">Нажмите "Добавить продукт", чтобы создать первый</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .product-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    .product-image {
+        height: 200px;
+        object-fit: cover;
+        border-bottom: 1px solid rgba(0,0,0,.125);
+    }
+    .no-image-placeholder {
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+        font-size: 3rem;
+    }
+    .card-footer {
+        border-top: none;
+        padding-top: 0;
+    }
+</style>
+{% endblock %}

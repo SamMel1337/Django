@@ -1,0 +1,52 @@
+{% extends "catalog/base.html" %}
+
+{% block title %}Добавление продукта{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Управление продуктами</h1>
+
+    <button class="add-product-btn" onclick="showProductForm()">
+        ＋ Добавить продукт
+    </button>
+
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <h3>Добавить новый продукт</h3>
+            <form id="productForm">
+                <div class="form-group">
+                    <label for="name">Название продукта:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="price">Цена:</label>
+                    <input type="number" id="price" name="price" step="0.01" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Категория:</label>
+                    <input type="text" id="category" name="category">
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Описание:</label>
+                    <textarea id="description" name="description" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="quantity">Количество:</label>
+                    <input type="number" id="quantity" name="quantity" value="1">
+                </div>
+
+                <button type="submit" class="add-product-btn">Сохранить продукт</button>
+                <button type="button" onclick="closeProductForm()">Отмена</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Здесь может быть список существующих продуктов -->
+    <div id="productsList">
+        <!-- Список продуктов будет загружаться здесь -->
+    </div>
+</div>

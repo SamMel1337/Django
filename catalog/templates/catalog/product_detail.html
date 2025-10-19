@@ -1,0 +1,195 @@
+<!-- catalog/templates/catalog/product_detail.html -->
+{% extends "catalog/base.html" %}
+{% load static %}
+{% load permission_tags %}
+
+{% block title %}{{ product.name }} | {{ block.super }}{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'catalog:product_list' %}">Каталог</a></li>
+<li class="breadcrumb-item active">{{ product.name }}</li>
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row g-4">
+        <!-- Изображение продукта -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="product-image-container">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" class="img-fluid rounded product-main-image" alt="{{ product.name }}" id="productImage">
+                        {% else %}
+                        <img src="{% static 'images/default-product.png' %}" class="img-fluid rounded product-main-image" alt="No image" id="productImage">
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Информация о продукте -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body p-4">
+                    <h1 class="product-title mb-3">{{ product.name }}</h1>
+
+                    <!-- Информация о владельце (только для авторизованных) -->
+                    {% if user.is_authenticated and product.owner %}
+                    <div class="owner-info mb-3">
+                        <p class="text-muted mb-1">
+                            <small>Владелец: {{ product.owner.username }}</small>
+                            {% if product.owner == user %}
+                                <span class="badge bg-info ms-2">Это ваш продукт</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    {% endif %}
+
+                    <div class="d-flex align-items-center mb-4">
+                        <span class="product-price fs-3 fw-bold text-primary me-3">{{ product.price }} ₽</span>
+                        {% if product.old_price %}
+                        <span class="product-old-price text-muted text-decoration-line-through">{{ product.old_price }} ₽</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="product-description mb-4">
+                        <h5 class="mb-3">Описание</h5>
+                        <p class="text-muted">{{ product.description|linebreaks }}</p>
+                    </div>
+
+                    {% if product.specifications %}
+                    <div class="product-specs mb-4">
+                        <h5 class="mb-3">Характеристики</h5>
+                        <ul class="list-unstyled">
+                            {% for spec in product.specifications.all %}
+                            <li class="mb-2"><strong>{{ spec.name }}:</strong> {{ spec.value }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <!-- Кнопки действий -->
+                    <div class="action-buttons mb-4">
+                        {% if user|can_edit:product or perms.catalog.change_product %}
+                        <a href="{% url 'catalog:product_update' product.pk %}" class="btn btn-outline-primary me-2">
+                            <i class="bi bi-pencil me-1"></i>Редактировать
+                        </a>
+                        {% endif %}
+
+                        {% if user|can_delete:product or perms.catalog.delete_product %}
+                        <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-outline-danger me-2">
+                            <i class="bi bi-trash me-1"></i>Удалить
+                        </a>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-3">
+                        <button class="btn btn-primary btn-lg flex-grow-1">
+                            <i class="bi bi-cart-plus me-2"></i>В корзину
+                        </button>
+                        <a href="{% url 'catalog:product_list' %}" class="btn btn-outline-secondary btn-lg">
+                            <i class="bi bi-arrow-left me-2"></i>Назад к каталогу
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .product-image-container {
+        position: relative;
+        padding-top: 100%;
+        background-color: #f8f9fa;
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+    .product-main-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: transform 0.3s;
+    }
+    .product-main-image:hover {
+        transform: scale(1.05);
+    }
+    .product-title {
+        font-weight: 600;
+        color: #333;
+    }
+    .product-price {
+        color: #0d6efd;
+    }
+    .product-old-price {
+        font-size: 1.2rem;
+    }
+    .product-description {
+        line-height: 1.8;
+    }
+    .btn-lg {
+        padding: 0.75rem 1.5rem;
+        font-size: 1.1rem;
+    }
+    .action-buttons {
+        padding: 1rem 0;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+    }
+    .owner-info {
+        background-color: #f8f9fa;
+        padding: 0.5rem;
+        border-radius: 0.25rem;
+        border-left: 3px solid #0d6efd;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Интерактивность для изображений
+    const mainImage = document.getElementById('productImage');
+
+    if (mainImage) {
+        mainImage.addEventListener('click', function() {
+            this.classList.toggle('zoomed');
+        });
+
+        // Добавляем стиль для увеличенного изображения
+        const style = document.createElement('style');
+        style.textContent = `
+            .product-main-image.zoomed {
+                transform: scale(1.8);
+                z-index: 1000;
+                position: relative;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // Обработка кнопки "В корзину"
+    const addToCartBtn = document.querySelector('.btn-primary');
+    if (addToCartBtn) {
+        addToCartBtn.addEventListener('click', function() {
+            this.innerHTML = '<i class="bi bi-check-circle me-2"></i>Добавлено';
+            this.classList.remove('btn-primary');
+            this.classList.add('btn-success');
+
+            // Возвращаем исходное состояние через 2 секунды
+            setTimeout(() => {
+                this.innerHTML = '<i class="bi bi-cart-plus me-2"></i>В корзину';
+                this.classList.remove('btn-success');
+                this.classList.add('btn-primary');
+            }, 2000);
+        });
+    }
+});
+</script>
+{% endblock %}
